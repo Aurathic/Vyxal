@@ -1,21 +1,21 @@
 - element: "λ"
   name: Lambda
   arity: "*"
-  description: Open a lambda - λ...;
+  description: Open a lambda (λ…;).
 
 - element: "ƛ"
   name: Lambda Map
   arity: 1
-  description: Open a mapping lambda - ƛ
+  description: Open a mapping lambda (ƛ…;).
 
 - element: "¬"
   name: Logical Not
   arity: 1
   description: Return the inverse (negation) of the truthiness of an item.
   overloads:
-    num: not a
-    str: a != "" | len(a) > 0
-    lst: a != [] | len(a) > 0
+    num: not a (a != 0)
+    str: a != "" (len(a) > 0)
+    lst: a != [] (len(a) > 0)
   vectorise: false
   tests:
     - "[1] : 0"
@@ -41,12 +41,12 @@
 - element: "⟑"
   name: Apply Lambda
   arity: 1
-  description: Like a mapping lambda, but the results are evaluated immediately, instead of being lazily evaluated
+  description: Like a mapping lambda, but the results are evaluated immediately, instead of being lazily evaluated.
 
 - element: "∨"
   name: Logical Or
   arity: 2
-  description: Returns the first truthy argument, otherwise the first falsy argument.
+  description: Returns the first truthy argument if at least one is truthy, otherwise the first falsy argument.
   overloads:
     any-any: a or b
   vectorise: false
@@ -57,7 +57,7 @@
     - "[2, 1] : 1"
 
 - element: "⟇"
-  name: Remove at Index
+  name: Remove At Index
   arity: 2
   description: Returns every item in a list except the item at the given index.
   overloads:
@@ -89,7 +89,7 @@
 - element: "×"
   name: Asterisk Literal
   arity: 0
-  description: the string "*" (asterisk)
+  description: The string "*" (asterisk).
   vectorise: false
   tests:
     - '[] : "*"'
@@ -97,33 +97,33 @@
 - element: "«"
   name: Base Compressed String
   arity: 0
-  description: Open/close a bijective base-255 compressed string - «...«
-
+  description: Open/close a bijective base-255 compressed string («…«).
+).
 - element: "␤"
   name: Newline
   arity: NA
-  description: NOP
+  description: NOP (No-op; do nothing).
 
 - element: "»"
   name: Base Compressed Number
   arity: 0
-  description: Open/close a bijective base-255 compressed number - »...»
+  description: Open/close a bijective base-255 compressed number (»…»).
 
 - element: "°"
   name: Complex Number Separator
-  description: Separates the real and imaginary parts of a complex number
+  description: Separate the real and imaginary parts of a complex number.
   arity: NA
 
 - element: "•"
   name: MultiCommand
   arity: 2
-  description: "Logarithm / Repeat Character / Capitalisation transfer"
+  description: Logarithm / Repeat character / Transfer capitalisation / Reshape
   overloads:
     num-num: log_a(b)
-    num-str: "[char * a for char in b]"
-    str-num: "[char * b for char in a]"
+    num-str: "''.join(char * a for char in b)"
+    str-num: "''.join(char * b for char in a)"
     str-str: a.with_capitalisation_of(b)
-    lst-lst: a molded  to  the shape of b
+    lst-lst: a molded to the shape of b
   vectorise: true
   tests:
     - "[8, 2] : 3.0"
@@ -137,26 +137,26 @@
   name: Conditional Execute
   arity: "1 + *"
   usage: ß<element>
-  description: Executes element A if the top of the stack is truthy
+  description: Execute element A if the top of the stack is truthy.
 
 - element: "†"
-  name: Function Call
+  name: Function Call / Python Execute / Count Prime Factors / Vectorized Not
   arity: 1
-  description: Calls a function / executes as python / number of distinct prime factors / vectorised not
+  description: Call a function / Execute as python / Get number of distinct prime factors / Vectorised not
   overloads:
     fun: a()
     num: len(prime_factors(a))
-    str: exec as python
-    lst: vectorised not
+    str: exec() (exec as python)
+    lst: "[not(x) for x in a]"
   vectorise: false
   tests:
     - "[12] : 2"
     - "[[1, 0, 1]] : [0, 1, 0]"
 
 - element: "€"
-  name: Split On / Fill By Coordinates
+  name: Split On / Map Over Coordinates
   arity: 2
-  description: Split a on b (works on lists and numbers as well) / Fill a matrix by calling a function with the lists of coordinates in the matrix.
+  description: Split a on b (works on lists and numbers as well) / Fill a matrix by calling a function with the lists of coordinates in the matrix
   overloads:
     any-any: a split on b
     any-fun: for each value of a (all the way down) call b with the coordinates of that value and put that at the appropriate position in a
@@ -172,7 +172,7 @@
 - element: "½"
   name: Halve
   arity: 1
-  description: Halves an item
+  description: Halve an item.
   overloads:
     num: a / 2
     str: a split into two strings of equal lengths (as close as possible)
@@ -188,22 +188,22 @@
 - element: "∆"
   name: Mathematical Digraph
   arity: NA
-  description: Used for mathematical digraphs
+  description: Used for mathematical digraphs.
 
 - element: "ø"
   name: String Digraph
   arity: NA
-  description: Used for string-based digraphs
+  description: Used for string-based digraphs.
 
 - element: "↔"
-  name: Combinations/Remove/Fixed Point Collection
+  name: Combinations With Replacement / Remove / Fixed Point Collection
   arity: 2
-  description: Does either combinations_with_replacement, removes items from a not in b, or applies a on b until the result stops changing (including the initial value).
+  description: Combinations with replacement / Remove items from a not in b (list intersection) / Get a list of repeated applications of a on b until the result stops changing (including the initial value).
   overloads:
     any-num: combinations_with_replacement(a, length=b)
-    fun-any: Apply a on b until the result does not change, yielding intermediate values. Includes the initial value.
-    any-str: remove elements from a that are not in b
-    any-lst: remove elements from a that are not in b
+    fun-any: "[b, a(b), a(a(b)), ..., t] (where a(t) = t)"
+    any-str: "[x for x in a if x in b]"
+    any-lst: "[x for x in a if x in b]"
   vectorise: false
   tests:
     - '["cabbage", "abcde"] : "cabbae"'
@@ -211,7 +211,7 @@
     - "[[1,2],2] : [[1,1],[1,2],[2,1],[2,2]]"
 
 - element: "¢"
-  name: Infinite Replacement / Apply at Indices
+  name: Fixed Point Replacement / Apply at Indices
   arity: 3
   description: Replace b in a with c until a does not change / Call a function on all elements at specified indices together and put that back in the list
   overloads:
@@ -227,7 +227,7 @@
 
 - element: "⌐"
   name: Complement / Comma Split
-  description: 1 - a if number, split by commas if string.
+  description: (1 - a) if number, split by commas if string.
   arity: 1
   overloads:
     num: 1 - a
@@ -240,7 +240,7 @@
 
 - element: "æ"
   name: Is Prime / Case Check
-  description: (a is prime) if a is a number, else check which case a is
+  description: Check if a is prime if a is a number, else identify the case of a.
   arity: 1
   overloads:
     num: is a prime?
@@ -254,11 +254,11 @@
     - '["!"] : -1'
 
 - element: "ʀ"
-  name: Inclusive Zero Range
-  description: Inclusive range or whether each character is alphabetical
+  name: Inclusive Zero Range / Check Alphabetical
+  description: Inclusive range from zero / Check if each character is alphabetical
   arity: 1
   overloads:
-    num: range(0,a + 1) (inclusive range from 0)
+    num: range(0,a + 1) ([0, 1, ..., a])
     str: "[is v alphabetical? for v in a]"
   vectorise: true
   tests:
@@ -267,11 +267,11 @@
     - "[3] : [0,1,2,3]"
 
 - element: "ʁ"
-  name: Exclusive Zero Range
-  description: Exclusive range or palindromise
+  name: Exclusive Zero Range / Vectorised Palindromise
+  description: Exclusive range from zero / Append reversed copy of input with last letter removed (vectorized)
   arity: 1
   overloads:
-    num: range(0,a) (exclusive range from 0)
+    num: range(0,a) ([0, 1, ..., a-1])
     str: palindromise(a) (a + a[:-1:-1])
   vectorise: true
   tests:
@@ -280,11 +280,11 @@
     - "[3] : [0,1,2]"
 
 - element: "ɾ"
-  name: Inclusive One Range
-  description: Inclusive range or uppercase
+  name: Inclusive One Range / Uppercase
+  description: Inclusive range from one / Make uppercase
   arity: 1
   overloads:
-    num: range(1,a+1) (inclusive range from 1)
+    num: range(1,a+1) ([1, 2, ..., a])
     str: a.uppercase()
   vectorise: true
   tests:
@@ -294,10 +294,10 @@
 
 - element: "ɽ"
   name: Exclusive One Range / Lowercase
-  description: Exclusive range or lowercase
+  description: Exclusive range from one / Make lowercase
   arity: 1
   overloads:
-    num: range(1,a) (exclusive range from 0)
+    num: range(1,a) ([1, 2, ..., a-1])
     str: a.lowercase()
   vectorise: true
   tests:
@@ -308,11 +308,11 @@
 - element: "Þ"
   name: List Digraph
   arity: NA
-  description: Used for list-related digraphs
+  description: Used for list-related digraphs.
 
 - element: "ƈ"
-  name: Choose / random choice / set same / drop while
-  description: Binomial coefficient / choose a random items from b / same except duplicates / drop while
+  name: Choose / Random Choice / Set Same / Drop While
+  description: Binomial coefficient / Choose a random items from b / Check if string have same characters, ignoring duplicates / Drop while true
   arity: 2
   overloads:
     num-num: a choose b (binomial coefficient)
@@ -331,7 +331,7 @@
 
 - element: "∞"
   name: Palindromise
-  description: Palindromise a
+  description: Append reversed copy of input with last letter removed.
   arity: 1
   overloads:
     any: palindromise a (a + a[:-1:-1])
@@ -346,7 +346,7 @@
 - element: "¨"
   name: Other Digraphs
   arity: NA
-  description: Used for various random digraphs
+  description: Used for various random digraphs.
 
 - element: " "
   name: Space
@@ -355,7 +355,7 @@
 
 - element: "!"
   name: Stack Length
-  description: Push the length of the stack
+  description: Push the length of the stack.
   arity: 0
   tests:
     - "[0,1,2] : 3"
@@ -365,7 +365,7 @@
 - element: '"'
   name: Pair
   arity: 2
-  description: Place the top two items into a single list
+  description: Place the top two items into a single list.
   overloads:
     any-any: "[a, b]"
   vectorise: false
@@ -376,7 +376,7 @@
 
 - element: "#"
   name: Comment
-  description: The characters until the next newline are commented out
+  description: The characters until the next newline are commented out.
   arity: NA
 
 - element: "#{"
@@ -418,7 +418,7 @@
 - modifier: "&"
   name: Apply To Register
   arity: "*"
-  description: Apply the next element to the register
+  description: Apply the next element to the register.
   usage: "&<element>"
 
 - element: "'"
@@ -458,7 +458,7 @@
 - element: "+"
   name: Addition
   arity: 2
-  description: Adds the top two items on the stack
+  description: Adds the top two items on the stack (plus).
   overloads:
     num-num: a + b
     num-str: str(a) + b
@@ -476,7 +476,7 @@
 
 - element: ","
   name: Print
-  description: Print a with trailing newline
+  description: Print a with trailing newline.
   arity: 1
   overloads:
     any: print(a)
@@ -485,7 +485,7 @@
 - element: "-"
   name: Subtract
   arity: 2
-  description: Subtracts the top two items on the stack
+  description: Subtracts the top two items on the stack (minus).
   overloads:
     num-num: a - b
     num-str: '("-" * a) + b'
@@ -505,12 +505,12 @@
 
 - element: "."
   name: Decimal Separator
-  description: Decimal separator
+  description: Decimal separator.
   arity: NA
 
 - element: "/"
   name: Divide / Split
-  description: Divide two numbers or split strings
+  description: Divide two numbers / Split strings
   arity: 2
   overloads:
     num-num: a / b
@@ -531,57 +531,57 @@
 
 - element: "0"
   name: Literal digit 0
-  description: Literal digit 0
+  description: Literal digit 0.
   arity: 0
 
 - element: "1"
   name: Literal digit 1
-  description: Literal digit 1
+  description: Literal digit 1.
   arity: 0
 
 - element: "2"
   name: Literal digit 2
-  description: Literal digit 2
+  description: Literal digit 2.
   arity: 0
 
 - element: "3"
   name: Literal digit 3
-  description: Literal digit 3
+  description: Literal digit 3.
   arity: 0
 
 - element: "4"
   name: Literal digit 4
-  description: Literal digit 4
+  description: Literal digit 4.
   arity: 0
 
 - element: "5"
   name: Literal digit 5
-  description: Literal digit 5
+  description: Literal digit 5.
   arity: 0
 
 - element: "6"
   name: Literal digit 6
-  description: Literal digit 6
+  description: Literal digit 6.
   arity: 0
 
 - element: "7"
   name: Literal digit 7
-  description: Literal digit 7
+  description: Literal digit 7.
   arity: 0
 
 - element: "8"
   name: Literal digit 8
-  description: Literal digit 8
+  description: Literal digit 8.
   arity: 0
 
 - element: "9"
   name: Literal digit 9
-  description: Literal digit 9
+  description: Literal digit 9.
   arity: 0
 
 - element: ":"
   name: Duplicate
-  description: Push a twice
+  description: Push a twice.
   arity: 1
   overloads:
     any: a,a
@@ -589,12 +589,12 @@
 
 - element: ";"
   name: Close Structure
-  description: Close a lambda / map lambda / sort lambda / function
+  description: Close a lambda, map lambda, sort lambda, or function.
   arity: NA
 
 - element: "<"
   name: Less Than
-  description: Basic comparison - less than
+  description: Basic comparison - strict less than.
   arity: 2
   overloads:
     num-num: a < b
@@ -616,7 +616,7 @@
 
 - element: "="
   name: Equals
-  description: Basic comparison - equals
+  description: Basic comparison - equals.
   arity: 2
   overloads:
     num-num: a == b
@@ -634,7 +634,7 @@
 
 - element: ">"
   name: Greater Than
-  description: Basic comparison - greater than
+  description: Basic comparison - strict greater than.
   arity: 2
   overloads:
     num-num: a > b
@@ -658,17 +658,17 @@
 - element: "?"
   name: Input
   arity: 0
-  description: Get the next input from the input source
+  description: Get the next input from the input source.
   vectorise: false
 
 - element: "@"
-  name: Function Call / Declaration
+  name: Function Call / Function Declaration
   description: Call / declare function (@name; / @name|code;)
   arity: "* / NA"
 
 - element: "A"
   name: All
-  description: Check if all items in a list are truthy / check if a character is a vowel
+  description: Check if all items in a list are truthy / Check if a character is a vowel
   arity: 1
   overloads:
     str: is_vowel(a) if a.length == 1 else [is_vowel(z) for z in a]
@@ -687,7 +687,7 @@
 
 - element: "B"
   name: Binary To Decimal
-  description: Convert a binary string or list to base 10
+  description: Convert a binary string or list to base 10.
   arity: 1
   overloads:
     any: int(a,2) (convert from base 2 to base 10)
@@ -703,7 +703,7 @@
 
 - element: "C"
   name: Chr / Ord
-  description: Convert between characters and ordinals
+  description: Convert between characters and ordinals.
   arity: 1
   overloads:
     num: chr(a)
@@ -719,13 +719,13 @@
 
 - element: "D"
   name: Triplicate
-  description: Push three copies of a to stack
+  description: Push three copies of a to stack.
   arity: 1
   vectorise: false
 
 - element: "E"
   name: Two Power / Python Eval
-  description: 2 ** a, or eval(a)
+  description: 2 ** a (2^a), or eval(a).
   arity: 1
   overloads:
     num: 2 ** a
@@ -756,7 +756,7 @@
 
 - element: "G"
   name: Max
-  description: Maximum value or a
+  description: Maximum value of a.
   arity: 1
   overloads:
     any: max(a)
@@ -769,7 +769,7 @@
 
 - element: "H"
   name: Hex To Decimal
-  description: Convert hexadecimal to decimal
+  description: Convert hexadecimal to decimal.
   arity: 1
   overloads:
     any: int(a,16) (from hexadecimal)
@@ -781,11 +781,11 @@
     - '["bEeDaB"] : 12512683'
 
 - element: "I"
-  name: Into Two Pieces
-  description: Push n spaces / quine cheese / into two pieces
+  name: Into Two Pieces / N Spaces
+  description: A string of n spaces / Quine cheese / Split into two pieces (with lengths as close as possible)
   arity: 1
   overloads:
-    num: push a spaces
+    num: " "*a
     str: equivalent to `qp`
     lst: split a list into two halves
   vectorise: false
@@ -798,7 +798,7 @@
 
 - element: "J"
   name: Merge
-  description: Join two lists or items
+  description: Join two lists or items.
   arity: 2
   overloads:
     lst-str: a.append(b) (append)
@@ -818,13 +818,13 @@
     - '["123",456] : "123456"'
 
 - element: "K"
-  name: Factors / Substrings / Prefixes
-  description: Get either the factors of a, substrings that occur more than once, or prefixes
+  name: Factors / Repeated Substrings / Prefixes
+  description: Factors of a / Non-empty substrings occuring multiple times in string / List of all prefixes of list
   arity: 1
   overloads:
     num: divisors(a) (positive integer factors)
     str: all non-empty substrings of a that occur more than once in a
-    lst: prefixes(a) (prefixes)
+    lst: "[a[:1], a[:2], ..., a[:-1], a]"
   vectorise: false
   tests:
     - "[20] : [1,2,4,5,10,20]"
@@ -837,7 +837,7 @@
 
 - element: "L"
   name: Length
-  description: Get length of a
+  description: Get length of a.
   arity: 1
   overloads:
     any: len(a)
@@ -851,7 +851,7 @@
 
 - element: "M"
   name: Map Function
-  description: Map function object b over a
+  description: Map function object b over a.
   arity: 2
   vectorise: false
   overloads:
@@ -865,7 +865,7 @@
 
 - element: "N"
   name: Negate / Swap Case / First Integer Where Truthy
-  description: Negate a number / swap case of a string / first integer where a function truthy
+  description: Negate a number / Swap case of a string / First integer in list [0, 1, -1, 2, -2, ...] where function is truthy
   arity: 1
   overloads:
     num: -a  (negate)
@@ -879,12 +879,12 @@
     - '["aBc"] : "AbC"'
 
 - element: "O"
-  name: Count / Maximums-by
-  description: Count number of times b occurs in a / Maximums-by
+  name: Count / Maximums-By
+  description: Count number of times b occurs in a / All elements in a where the result of b(x) is highest
   arity: 2
   overloads:
     any-any: a.count(b)
-    any-fun: all elements in a where the result of b(x) is highest
+    any-fun: [x for x in a if b(a) == max([b(y) for y in a])]
   vectorise: false
   tests:
     - "[[1,2,3,4,5,4,3], 4] : 2"
@@ -894,12 +894,12 @@
     - '["1213121", 1] : 4'
 
 - element: "P"
-  name: Strip / Minimums-by
-  description: Remove the set of elements in b from both ends of a / Minimums-by
+  name: Strip / Minimums-By
+  description: Remove the set of elements in b from both ends of a / All elements in a where the result of b(x) is lowest
   arity: 2
   overloads:
     any-any: a.strip(b)
-    any-fun: all elements in a where the result of b(x) is lowest
+    any-fun: [x for x in a if b(a) == min([b(y) for y in a])]
   vectorise: false
   tests:
     - "[[1, 2, 3, 4, 5, 4, 3, 2, 1], [1, 2]] : [3, 4, 5, 4, 3]"
@@ -912,15 +912,15 @@
 
 - element: "Q"
   name: Quit
-  description: Quit the program
+  description: Quit the program.
   arity: NA
 
 - element: "R"
-  name: Reduce
-  description: Reduce a by b, or reverse each item of b
+  name: Reduce / Vectorised Reverse / String Convert Base From Decimal
+  description: Reduce a by b / Reverse each item of b / Turn number into an arbitrary base string (provided the base is <= 36) 
   arity: 2
   overloads:
-    num-num: a in base b, using a default alphabet 0-9A-Z
+    num-num: string representing a in base b, using a default alphabet 0-9A-Z
     any-fun: reduce(b,a) (Reduce a by b)
     any-any: a, vectorised_reverse(b)
   vectorise: false
@@ -935,7 +935,7 @@
 
 - element: "S"
   name: Stringify
-  description: Stringify a list or number
+  description: Turn a list or number into a string.
   arity: 1
   overloads:
     any: str(a) (Stringify)
@@ -947,7 +947,7 @@
 
 - element: "T"
   name: Truthy Indices / Triple / Triadify
-  description: Get indices of truthy elements, triple, or make the arity of a function 3
+  description: Get indices of truthy elements / Triple / Make the arity of a function 3
   arity: 1
   overloads:
     num: a * 3
@@ -963,10 +963,10 @@
 
 - element: "U"
   name: Uniquify
-  description: Remove duplicates
+  description: Remove duplicates (make into a set).
   arity: 1
   overloads:
-    any: uniquify(a) (remove duplicates)
+    any: list(set(a))
   vectorise: false
   tests:
     - "[[1,3,5,5]] : [1,3,5]"
@@ -980,7 +980,10 @@
   description: Replace b with c in a / Map a function at elements of a list whose indices are in another list
   arity: 3
   overloads:
-    any-any-any: a.replace(b,c) (replace). b can be a list of substrings to replace. If b is a list of substrings, so can c. If c is shorter, the extra strings in b will be replaced with the empty string, i.e., removed.
+    any-any-any: >-
+      a.replace(b,c) (replace). b can be a list of substrings to replace. 
+      If b is a list of substrings, so can c. 
+      If c is shorter, the extra strings in b will be replaced with the empty string, i.e., removed.
     lst-lst-fun: for each i in b, change the ith element in a by applying the function, then return the new list
     lst-num-fun: replace the bth element in a by applying the function, then return the new list
   vectorise: false
@@ -1014,7 +1017,7 @@
 
 - element: "Y"
   name: Interleave
-  description: Interleave two lists
+  description: Interleave two lists.
   arity: 2
   overloads:
     any-any: interleave(a,b) (a[0], b[0], a[1], b[1], ...)
@@ -1028,7 +1031,7 @@
 
 - element: "Z"
   name: Zip
-  description: Zip two lists or Zip a with b mapped over a. Fills with 0s if needed.
+  description: Zip two lists (filling with 0s if needed) / Zip a with b mapped over a
   arity: 2
   overloads:
     any-any: zip(a,b)
@@ -1043,22 +1046,22 @@
 
 - element: "["
   name: Open If Statement
-  description: Open an if Statement
+  description: Open an if statement.
   arity: 1
 
 - element: "\\"
-  name: Single char Literal
-  description: Pushes a single character
+  name: Single Char Literal
+  description: Pushes a single character.
   arity: 0
 
 - element: "]"
   name: Close If Statement
-  description: Close an if Statement
+  description: Close an if statement.
   arity: NA
 
 - element: "`"
   name: String Literal
-  description: A string literal - `...`
+  description: A string literal - `…`.
   arity: 0
 
 - element: "^"
@@ -1068,7 +1071,7 @@
 
 - element: "_"
   name: Pop
-  description: Pop the top item of the stack
+  description: Pop the top item of the stack.
   arity: 1
   vectorise: false
 
@@ -1090,7 +1093,7 @@
 
 - element: "b"
   name: Binary
-  description: Convert a number or string to binary
+  description: Convert a number or string to binary.
   arity: 1
   overloads:
     num: bin(a) (list of binary digits of a)
@@ -1104,7 +1107,7 @@
 
 - element: "c"
   name: Contains / First Truthy Item Under Function Application
-  description: Check if one thing contains another / returns the first truthy item in a list after applying a function
+  description: Check if one thing contains another / The first truthy item in a list after applying a function
   arity: 2
   overloads:
     any-fun: first item of a where b(x) is truthy (shortcut for Fh)
@@ -1123,7 +1126,7 @@
 
 - element: "d"
   name: Double / Dyadify
-  description: Double a number or repeat a string twice / make a function dyadic
+  description: Double a number or repeat a string twice / Make a function dyadic
   arity: 1
   overloads:
     num: a * 2 (double)
@@ -1138,14 +1141,14 @@
     - '["ha"] : "haha"'
 
 - element: "e"
-  name: Exponentiation
-  description: Exponentiate two numbers / extend string / get length of a regex match
+  name: Exponentiation / Extend / Regex Span
+  description: Exponentiate two numbers / Extend string / Get starting and ending indices of the first regular expression match
   arity: 2
   overloads:
     num-num: a ** b (exponentiation)
     str-num: append a[0] until a is length b (spaces are used if a is empty)
     num-str: append b[0] until b is length a (spaces are used if b is empty)
-    str-str: regex.search(pattern=a, string=b).span() (length of regex match)
+    str-str: regex.search(pattern=a, string=b).span()
   vectorise: true
   tests:
     - "[5,3] : 125"
@@ -1157,13 +1160,13 @@
     - '["hellooo","e.*o"] : [1,7]'
 
 - element: "f"
-  name: Flatten
-  description: Turn a number into a list of digits, split a string into a list of characters, or flatten a list.
+  name: Flatten / Listify
+  description: Turn a number into a list of digits / Split a string into a list of characters / Flatten a list.
   arity: 1
   overloads:
-    num: digits of a
+    num: list of digits of a
     str: list of characters of a
-    lst: flatten(a) (deep flatten)
+    lst: flatten(a) (deep flatten / recursive flatten)
   vectorise: false
   tests:
     - "[135] : [1,3,5]"
@@ -1174,7 +1177,7 @@
 
 - element: "g"
   name: Minimum
-  description: Take the minimum of a list
+  description: Smallest element of something.
   arity: 1
   overloads:
     any: min(a)
@@ -1188,7 +1191,7 @@
 
 - element: "h"
   name: Head
-  description: First item of something
+  description: First item of something.
   arity: 1
   overloads:
     any: a[0] (first item)
@@ -1200,7 +1203,7 @@
 
 - element: "i"
   name: Index
-  description: Index into a list
+  description: Index into a list.
   arity: 2
   overloads:
     any-num: a[b] (index)
@@ -1291,12 +1294,12 @@
   arity: 0
 
 - element: "o"
-  name: Remove
-  description: Remove instances of b in a
+  name: Remove / Positive Integers Where Function Truthy  
+  description: Remove instances of b in a / First n positive integers where given function is truthy
   arity: 2
   overloads:
-    num-fun: first a positive integers where b is truthy
-    fun-num: first b positive integers where a is truthy
+    num-fun: [x for x in [1,2,3,...] if b(x)][:a]
+    fun-num: [x for x in [1,2,3,...] if a(x)][:b]
     any-any: a.replace(b,"")
   vectorise: false
   tests:
@@ -1311,7 +1314,7 @@
 
 - element: "p"
   name: Prepend
-  description: Prepend b to a
+  description: Prepend b to a.
   overloads:
     any-any: a.prepend(b) (prepend b to a)
   arity: 2
@@ -1328,7 +1331,7 @@
 
 - element: "q"
   name: Uneval
-  description: Enclose in backticks, escape backslashes and backticks.
+  description: Enclose in backticks, escaping backslashes and backticks.
   arity: 1
   overloads:
     any: uneval(a) (enclose in backticks + escape)
@@ -1339,15 +1342,15 @@
     - '["a"] : "`a`"'
 
 - element: "r"
-  name: Range
-  description: Range between two numbers, or cumulative reduce, or regex match
+  name: Range / Pad / Cumulative Reduce / Check Regex Match
+  description: Range between two numbers / Pad string with spaces / Cumulative reduce (list of prefixes of a each reduced by b) / Check if regular expression matches string
   arity: 2
   overloads:
-    num-num: range(a,b) (range from a to b)
-    num-str: append spaces to b to make it length a
-    str-num: prepend spaces to a to make it length b
-    any-fun: cumulative_reduce(a,function=b) (prefixes of a reduced by b)
-    str-str: regex.has_match(pattern=a,string= b) (does b match a)
+    num-num: range(a,b) (range from a to b, [a, a+1, ..., b])
+    num-str: b.ljust(a) (append spaces to b to make it length a)
+    str-num: a.rjust(b) (prepend spaces to a to make it length b)
+    any-fun: [a[0], b(a[0],a[1]), b(b(a[0],a[1]),a[2]), ...]
+    str-str: regex.has_match(pattern=a,string=b)
   vectorise: true
   tests:
     - "[3,6] : [3,4,5]"
@@ -1360,7 +1363,7 @@
 
 - element: "s"
   name: sort
-  description: Sort a list or string
+  description: Sort a list or string.
   arity: 1
   overloads:
     any: sorted(a) (sort)
@@ -1373,7 +1376,7 @@
 
 - element: "t"
   name: Tail
-  description: Last item
+  description: Last item.
   arity: 1
   overloads:
     any: a[-1] (last item)
@@ -1386,14 +1389,14 @@
 
 - element: "u"
   name: Minus One
-  description: Push -1
+  description: Push -1.
   arity: 0
   tests:
     - "[] : -1"
 
 - modifier: "v"
   name: Vectorise
-  description: Vectorise an element
+  description: Vectorise an element.
   arity: "*"
   usage: v<element>
 
@@ -1411,7 +1414,7 @@
 
 - element: "w"
   name: Listify
-  description: a wrapped in a singleton list
+  description: Item wrapped in a singleton list.
   arity: 1
   overloads:
     any: "[a] (wrap in singleton list)"
@@ -1423,11 +1426,11 @@
 
 - element: "x"
   name: Recurse / Continue / Print Stack
-  description: Call current function (Functions/Lambdas) / Continue (For Loops) / Print the entire stack (otherwise)
+  description: Call current function (functions/lambdas) / Continue (for Loops) / Print the entire stack (otherwise)
 
 - element: "y"
   name: Uninterleave
-  description: Push every other item of a, and the rest.
+  description: Push every other item of a, then the rest.
   arity: 1
   overloads:
     any: a[::2], a[1::2] (every second item, the rest)
@@ -1441,7 +1444,7 @@
 
 - element: "z"
   name: Zip-self
-  description: Zip a with itself
+  description: Zip a with itself.
   arity: 1
   overloads:
     any: zip(a,a)
@@ -1454,25 +1457,25 @@
 
 - element: "{"
   name: Open While Loop
-  description: Open a while loop - `{...}`
+  description: Open a while loop (`{…}`).
   arity: NA
 
 - element: "|"
   name: Branch In Structure
-  description: Branch the structure - means various things depending on context
+  description: Branch the structure - means various things depending on context.
 
 - element: "}"
   name: Close While Loop
-  description: Close a while loop
+  description: Close a while loop (`{…}`).
 
 - modifier: "~"
   name: Filter / Execute Without Pop
-  description: For monads, filter a list by that. For dyads, execute without popping from the stack.
+  description: For monads, filter a list by the monad. For dyads, execute without popping from the stack.
   usage: "~<element>"
 
 - element: "↑"
   name: Max by Tail
-  description: Maximum by last item
+  description: Maximum by last item.
   arity: 1
   overloads:
     any: "max(a, key=lambda x: x[-1]) (maximum by last item)"
@@ -1483,7 +1486,7 @@
 
 - element: "↓"
   name: Min by Tail
-  description: Minimum by last item
+  description: Minimum by last item.
   arity: 1
   overloads:
     any: "min(a, key=lambda x: x[-1]) (minimum by last item)"
@@ -1520,7 +1523,7 @@
 
 - element: "›"
   name: Increment / Space Replace With 0
-  description: Add 1 to a number / replace all spaces in a string with "0"
+  description: Add 1 to a number / Replace all spaces in a string with "0"
   arity: 1
   overloads:
     num: a + 1
@@ -1533,7 +1536,7 @@
 
 - element: "‹"
   name: Decrement
-  description: Subtract 1 from a number
+  description: Subtract 1 from a number / Append a dash to a string
   arity: 1
   overloads:
     num: a - 1
@@ -1545,12 +1548,12 @@
     - '["hello"] : "hello-"'
 
 - element: "∷"
-  name: Parity
-  description: A number modulo 2
+  name: Parity / Second Half
+  description: A number modulo 2, i.e. is the number odd / Second half of a (rounding length down)
   arity: 1
   overloads:
     num: a % 2 (odd?)
-    str: second half of A
+    str: a[(len(a)+1)//2:]
   vectorise: true
   tests:
     - "[2] : 0"
@@ -1562,31 +1565,31 @@
 
 - element: "¤"
   name: Empty String
-  description: The empty string
+  description: The empty string.
   arity: 0
   tests:
     - '[] : ""'
 
 - element: "ð"
   name: Space
-  description: A Space
+  description: A space.
   arity: 0
   tests:
     - '[] : " "'
 
 - element: "→"
   name: Variable Set
-  description: Set variable (→name)
+  description: Set variable (→name).
   arity: 1
 
 - element: "←"
   name: Variable Get
-  description: Get the value of a variable (←name)
+  description: Get the value of a variable (←name).
   arity: 0
 
 - element: "β"
   name: To Base Ten / From Custom Base
-  description: Convert a number from a custom base to base 10
+  description: Convert a number from a custom base to base 10.
   arity: 2
   overloads:
     any-num: a to base 10 from number base b, treating list items / string items as digits
@@ -1625,8 +1628,8 @@
     - "[-3,-1] : [1, 0, 1, 0, 1, 0]"
 
 - element: "ȧ"
-  name: Absolute value
-  description: Take the absolute value of a number, or remove whitespace from a string
+  name: Absolute Value / Remove Whitespace
+  description: Take the absolute value of a number / remove whitespace (space, tab, newline, carriage return, line tabulation, and form feed) from a string
   arity: 1
   overloads:
     num: abs(a) (absolute value)
@@ -1640,7 +1643,7 @@
 
 - element: "ḃ"
   name: Boolify
-  description: Convert an arbitrary value into a truthy or falsy value, vectorises with flag t
+  description: Convert an arbitrary value into a truthy or falsy value, vectorises with flag t.
   arity: 1
   overloads:
     any: bool(a) (booliify)
@@ -1655,7 +1658,7 @@
 
 - element: "ċ"
   name: Not One
-  description: Check if something is not equal to 1
+  description: Check if something is not equal to 1.
   arity: 1
   overloads:
     any: a != 1
@@ -1667,15 +1670,15 @@
     - "[1] : 0"
 
 - element: "ḋ"
-  name: Divmod
-  description: Divmod / combinations / trim / chunk-while
+  name: Divmod / Combinations / Replace Top / Chunk While 
+  description: Divmod / Combinations / Substitute the first elements of a with those of b / Group elements in a by elements that fulfill predicate b
   arity: 2
   overloads:
     num-num: "[a // b, a % b] (divmod - division and modulo)"
     str-num: combinations of a with length b
     lst-num: combinations of a with length b
-    str-str: overwrite the start of a with b (b + a[len(b):])
-    lst-fun: group elements in a by elements that fulfil predicate b
+    str-str: "b + a[len(b):] (overwrite the start of a with b)"
+    lst-fun: "[[a[0],..., a[x]], [a[x+1], ..., a[y]], ...] where b(a[x]), b(a[y]), ..., are falsy, and the rest are truthy"
   vectorise: false
   tests:
     - "[5,3] : [1,2]"
@@ -1687,10 +1690,10 @@
 
 - element: "ė"
   name: Enumerate
-  description: Zip with a range of the same length
+  description: Zip with a range of the same length [0,1,...,len(a)-1].
   arity: 1
   overloads:
-    any: enumerate(a) (zip with 1...len(a))
+    any: enumerate(a) ([[0,a[0]], [1,a[1]], ..., [len(n)-1, a[len(n)-1]])
   vectorise: false
   tests:
     - '["abc"] : [[0,"a"],[1,"b"],[2,"c"]]'
@@ -1698,12 +1701,12 @@
     - "[123] : [[0,1],[1,2],[2,3]]"
 
 - element: "ḟ"
-  name: Find
-  description: Find a value in another
+  name: Find / Truthy Map Indices
+  description: Find one value in another / Truthy indices of mapping b over a
   arity: 2
   overloads:
-    any-any: a.find(b) (indexing, -1 if not found)
-    any-fun: truthy indices of mapping b over a
+    any-any: a.find(b) (index of b in a, -1 if not found)
+    any-fun: [i for i in range(len(a)) if b(a[i])]
   vectorise: false
   tests:
     - "[[1,2,3],2] : 1"
@@ -1715,8 +1718,8 @@
     - "[[[1],[2],[3,4]],[3,4]] : 2"
 
 - element: "ġ"
-  name: Gcd / Group by Function
-  description: Greatest Common Denominator of a list or some numbers
+  name: GCD / Group By Function / Longest Common Suffix
+  description: Greatest Common Denominator of a list or some numbers / Longest common suffix of two strings / Group by the results of a function (groups sorted by output of function)
   arity: "*"
   overloads:
     lst: GCD(a) (gcd of whole list)
@@ -1736,7 +1739,7 @@
 
 - element: "ḣ"
   name: Head Extract
-  description: Separate the first item of something and push both to stack
+  description: Separate the first item of something, then push both to stack.
   arity: 1
   overloads:
     any: a[0], a[1:] (head extract)
@@ -1748,8 +1751,8 @@
     - "[[]] : []"
 
 - element: "ḭ"
-  name: Floor Division
-  description: Floor divide a by b
+  name: Floor Division / Head Partition / Right Reduce 
+  description: Floor divide a by b / Get the first (1/n)th of a string / Right reduce
   arity: 2
   overloads:
     num-num: a // b (floor division, floor(a / b))
@@ -1772,18 +1775,18 @@
     - '["",3] : ""'
 
 - element: "ŀ"
-  name: Left Justify / Gridify / Infinite Replace / Collect until false
-  description: Find one value inside another, starting from a certain index.
+  name: Bounds / Left Justify / Gridify / Vectorised Infinite Replace / Collect Until False
+  description: Check if value is within a range / Left pad by given character / Copy item into 2D array of certain dimensions  
   arity: 3
   overloads:
     num-num-num: a <= c <= b
-    num-num-str: a by b grid of c
-    num-str-num: a by c grid of b
+    num-num-str: [[c]*a]*b (a by b grid of c)
+    num-str-num: [[b]*a]*c (a by c grid of b)
     num-str-str: b.ljust(a,filler=c)
-    str-num-num: b by c grid of a
+    str-num-num: [[a]*b]*c (b by c grid of a)
     str-num-str: a.ljust(c,filler=b)
     str-str-num: a.ljust(b,filler=c)
-    str-str-str: a.infinite_replace(b, c)
+    str-str-str: a.infinite_replace(b, c) (vectorised version of ¢)
     fun-fun-any: "[c, a(c), a(a(c)), ...], stopping at the first element x such that b(x) is falsy"
   vectorise: true
   tests:
@@ -1800,7 +1803,7 @@
 
 - element: "ṁ"
   name: Mean
-  description: Average of a list - sum / length
+  description: Average of a list (sum / length) (also palindromises for some reason).
   arity: 1
   overloads:
     str: palindromise(a) (a + a[:-1:-1])
@@ -1813,14 +1816,14 @@
     - "[[4,71,-63]] : 4"
 
 - element: "ṅ"
-  name: Join By Nothing
-  description: Join a list by the empty string. Vectorises if the list contains lists.
+  name: Magnitude Within One / Pad to Multiple Of Eight / Join By Nothing / First Positive Integer Where Truthy
+  description: Check if number is between -1 and 1 inclusive / Join a list by the empty string (vectorising if the list contains lists) /  First integer in list [1, 2, ...] where function is truthy
   arity: 1
   overloads:
     num: abs(a) <= 1
     str: pad with 0s to nearest positive multiple of 8
     lst: '"".join(a)'
-    fun: first integer x where a(x) is truthy
+    fun: first positive integer x where a(x) is truthy
   vectorise: false
   tests:
     - '[["a","b","c"]] : "abc"'
@@ -2188,7 +2191,7 @@
   arity: 1
   description: Returns the sums of the prefixes of the top of the stack (cumulatively reduce by addition)
   overloads:
-    any: cumulative_sum(a) ([a[0], a[0]+a[1], a[0]+a[1]+a[2], ...])
+    any: cumulative_sum(a) ([a[0], a[0]+a[1], a[0]+a[1]+a[2], ...]) (scanl)
   vectorise: false
   tests:
     - "[12345] : [1, 3, 6, 10, 15]"
